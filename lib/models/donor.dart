@@ -1,5 +1,6 @@
 class Donor {
   final int? id;
+  final String indicompFtsId; // Added this field
   final String title;
   final String fullName;
   final String fatherName;
@@ -43,6 +44,7 @@ class Donor {
   
   Donor({
     this.id,
+    required this.indicompFtsId, // Added required parameter
     required this.title,
     required this.fullName,
     required this.fatherName,
@@ -92,6 +94,7 @@ class Donor {
     
     return Donor(
       id: json['id'],
+      indicompFtsId: json['indicomp_fts_id']?.toString() ?? '', // Added this line
       title: json['title'] ?? '',
       fullName: json['indicomp_full_name'] ?? json['full_name'] ?? '',
       fatherName: json['indicomp_father_name'] ?? '',
@@ -226,6 +229,9 @@ class Donor {
   
   String get uniqueId => id != null ? 'DON-${id.toString().padLeft(6, '0')}' : 'NEW';
   
+  // Get FTS ID for API calls
+  String get ftsId => indicompFtsId.isNotEmpty ? indicompFtsId : (id?.toString() ?? '');
+  
   String get maskedPhone {
     String phone = mobilePhone.replaceAll(RegExp(r'[^\d]'), '');
     if (phone.length >= 10) {
@@ -282,11 +288,10 @@ class Donor {
            resPincode.isNotEmpty;
   }
   
-  // Get donor type color for UI
- 
   // Create a copy of donor with updated fields
   Donor copyWith({
     int? id,
+    String? indicompFtsId,
     String? title,
     String? fullName,
     String? fatherName,
@@ -330,6 +335,7 @@ class Donor {
   }) {
     return Donor(
       id: id ?? this.id,
+      indicompFtsId: indicompFtsId ?? this.indicompFtsId,
       title: title ?? this.title,
       fullName: fullName ?? this.fullName,
       fatherName: fatherName ?? this.fatherName,
@@ -372,6 +378,4 @@ class Donor {
       chapterName: chapterName ?? this.chapterName,
     );
   }
-
-  void operator [](String other) {}
 }

@@ -3,7 +3,11 @@ import 'package:bb/models/donor.dart';
 import 'package:bb/provider/auth_provider.dart';
 import 'package:bb/screens/create_donor_company.dart';
 import 'package:bb/screens/create_individual_Donor.dart';
+import 'package:bb/screens/create_receipt_screen.dart';
+import 'package:bb/screens/dashbboard.dart';
+import 'package:bb/screens/donor_view.dart';
 import 'package:bb/screens/edit_donor_screen.dart';
+import 'package:bb/screens/reciept.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -216,28 +220,7 @@ class _DonorListScreenState extends State<DonorListScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Top bar ──────────────────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => _openDrawer(context),
-                    child: const Icon(Icons.menu,
-                        size: 24, color: Color(0xFF1A1A2E)),
-                  ),
-                  const SizedBox(width: 14),
-                  const Text(
-                    'Individual Donor List',
-                    style: TextStyle(
-                      fontSize: 19,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF1A1A2E),
-                      letterSpacing: 0.1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+           
 
             const SizedBox(height: 12),
 
@@ -385,12 +368,11 @@ Container(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                             itemCount: filteredDonors.length,
                             itemBuilder: (context, index) =>
-                                _DonorCard(
-                              donor: filteredDonors[index],
-                              typeColor: _typeColor(filteredDonors[index].type),
-                              onView: () =>
-                                  _showDonorDetails(filteredDonors[index]),
-                            ),
+    _DonorCard(
+      donor: filteredDonors[index],
+      typeColor: _typeColor(filteredDonors[index].type),
+      onView: () => _showDonorDetails(filteredDonors[index]),
+    ),
                           ),
                         ),
             ),
@@ -527,11 +509,14 @@ class _DonorCard extends StatelessWidget {
   final Donor donor;
   final Color typeColor;
   final VoidCallback onView;
+ 
 
   const _DonorCard({
     required this.donor,
     required this.typeColor,
     required this.onView,
+    
+    
   });
 
   @override
@@ -603,10 +588,20 @@ class _DonorCard extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _ActionIcon(
-                          icon: Icons.insert_drive_file_outlined,
-                          onTap: onView,
-                        ),
+                         _ActionIcon(
+                                icon: Icons.receipt_outlined, // Changed to receipt icon
+                                onTap: () {
+                                  // Navigate to Create Receipt Screen with donor data
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CreateReceiptScreen(
+                                        donor: donor,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                         const SizedBox(width: 6),
                         _ActionIcon(
                           icon: Icons.edit_outlined,
@@ -621,10 +616,28 @@ onTap: () {
 }
                         ),
                         const SizedBox(width: 6),
-                        _ActionIcon(
-                          icon: Icons.remove_red_eye_outlined,
-                          onTap: onView,
-                        ),
+                   _ActionIcon(
+  icon: Icons.remove_red_eye_outlined,
+  onTap: () {
+    // IMPORTANT: Pass the DATABASE ID (donor.id) not the FTS ID
+    final donorId = donor.id?.toString() ?? '';
+    debugPrint('🔍 Viewing donor - DB ID: ${donor.id}, FTS ID: ${donor.indicompFtsId}');
+    debugPrint('🚀 Navigating to DonorViewScreen with DATABASE ID: $donorId');
+    
+    if (donorId.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DonorViewScreen(
+            donorId: donorId,  // Pass DATABASE ID (e.g., 12399)
+          ),
+        ),
+      );
+    } else {
+      debugPrint('❌ No valid donor ID found');
+    }
+  },
+),
                       ],
                     ),
                   ),

@@ -1,4 +1,5 @@
 import 'package:bb/provider/auth_provider.dart';
+import 'package:bb/screens/dashbboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/login_screen.dart';
@@ -64,7 +65,7 @@ class MyApp extends StatelessWidget {
           '/signup': (context) => SignupScreen(),
           '/forgot-password': (context) => ForgotPasswordScreen(),
           '/change-password': (context) => ChangePasswordScreen(),
-          '/donor-list': (context) => DonorListScreen(),
+          '/donor-list': (context) => DashboardScreen(),
         },
       ),
     );
