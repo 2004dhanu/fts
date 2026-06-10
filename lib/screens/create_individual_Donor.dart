@@ -803,20 +803,55 @@ class _CreateDonorScreenState extends State<CreateDonorScreen> {
           )
         else
           const SizedBox.shrink(),
-        if (showNext)
-          ElevatedButton.icon(
-            onPressed: _next,
-            icon: const Icon(Icons.arrow_forward, size: 15),
-            label: const Text('Next', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _blue,
-              foregroundColor: Colors.white,
-              elevation: 0,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              minimumSize: const Size(80, 36),
-            ),
-          ),
+       if (showNext)
+  Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(8),
+      gradient: const LinearGradient(
+        colors: [
+          Color(0xFF4074DA),
+          Color(0xFF153C89),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      border: Border.all(
+        color: Colors.white24,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: const Color(0xFF4074DA).withOpacity(0.25),
+          blurRadius: 8,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: ElevatedButton.icon(
+      onPressed: _next,
+      icon: const Icon(Icons.arrow_forward, size: 15),
+      label: const Text(
+        'Next',
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        minimumSize: const Size(80, 36),
+      ),
+    ),
+  ),
       ],
     ),
   );

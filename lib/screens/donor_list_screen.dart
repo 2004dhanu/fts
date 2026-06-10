@@ -258,87 +258,7 @@ class _DonorListScreenState extends State<DonorListScreen> {
             ),
 
             const SizedBox(height: 14),
-Container(
-  padding: const EdgeInsets.all(16),
-  child: Row(
-    children: [
-      Expanded(
-        child: ElevatedButton.icon(
-          onPressed: () async {
-            final result = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const CreateDonorScreen(),
-              ),
-            );
 
-            if (result == true) {
-              setState(() {});
-            }
-          },
-          icon: const Icon(Icons.person_add, size: 18),
-          label: const Text(
-            'Add Donor',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF3B7DD8),
-            foregroundColor: Colors.white,
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(
-              vertical: 14,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        ),
-      ),
-
-      const SizedBox(width: 12),
-
-      Expanded(
-        child: ElevatedButton.icon(
-          onPressed: () async {
-            final result = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    const CreateCompanyDonorScreen(),
-              ),
-            );
-
-            if (result == true) {
-              setState(() {});
-            }
-          },
-          icon: const Icon(Icons.business, size: 18),
-          label: const Text(
-            'Add Company',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF3B7DD8),
-            foregroundColor: Colors.white,
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(
-              vertical: 14,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        ),
-      ),
-    ],
-  ),
-),
             // ── List ──────────────────────────────────────────────────────
             Expanded(
               child: authProvider.isLoading && authProvider.donors.isEmpty
@@ -364,16 +284,155 @@ Container(
                       : RefreshIndicator(
                           color: _primaryBlue,
                           onRefresh: _fetchDonors,
-                          child: ListView.builder(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                            itemCount: filteredDonors.length,
-                            itemBuilder: (context, index) =>
-    _DonorCard(
-      donor: filteredDonors[index],
-      typeColor: _typeColor(filteredDonors[index].type),
-      onView: () => _showDonorDetails(filteredDonors[index]),
+                          child: ListView(
+  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+  children: [
+
+    // Header Card
+    Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+  child: Container(
+    height: 48,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(8),
+      gradient: const LinearGradient(
+        colors: [
+          Color(0xFF4074DA),
+          Color(0xFF153C89),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: const Color(0xFF4074DA).withOpacity(0.25),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        ),
+      ],
     ),
-                          ),
+    child: ElevatedButton.icon(
+      onPressed: () async {
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CreateDonorScreen(),
+          ),
+        );
+
+        if (result == true) {
+          setState(() {});
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      icon: const Icon(Icons.person_add, size: 18),
+      label: const Text(
+        'Add Donor',
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+  ),
+),
+
+      const SizedBox(width: 12),
+
+     Expanded(
+  child: Container(
+    height: 48,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(8),
+       gradient: const LinearGradient(
+        colors: [
+          Color(0xFF4074DA),
+          Color(0xFF153C89),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      border: Border.all(
+        color: Colors.white.withOpacity(0.15),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: const Color(0xFF4074DA).withOpacity(0.25),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: ElevatedButton.icon(
+      onPressed: () async {
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                const CreateCompanyDonorScreen(),
+          ),
+        );
+
+        if (result == true) {
+          setState(() {});
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      icon: const Icon(Icons.business, size: 18),
+      label: const Text(
+        'Add Company',
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+  ),
+),
+        ],
+      ),
+    ),
+
+    ...filteredDonors.map(
+      (donor) => _DonorCard(
+        donor: donor,
+        typeColor: _typeColor(donor.type),
+        onView: () => _showDonorDetails(donor),
+      ),
+    ),
+  ],
+),
                         ),
             ),
           ],
@@ -526,230 +585,218 @@ class _DonorCard extends StatelessWidget {
     final bool hasContact =
         donor.contactName.isNotEmpty && donor.contactName != 'null';
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+    return GestureDetector(
+      onTap: () {
+      // IMPORTANT: Pass the DATABASE ID (donor.id) not the FTS ID
+      final donorId = donor.id?.toString() ?? '';
+      debugPrint('🔍 Viewing donor - DB ID: ${donor.id}, FTS ID: ${donor.indicompFtsId}');
+      debugPrint('🚀 Navigating to DonorViewScreen with DATABASE ID: $donorId');
+      
+      if (donorId.isNotEmpty) {
+        Navigator.push(
+          context,
+         MaterialPageRoute(
+  builder: (context) => DonorViewScreen(
+    donorId: donor.id.toString(),
+    donor: donor,
+  ),
+),
+        );
+      } else {
+        debugPrint('❌ No valid donor ID found');
+      }
+        },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+      
+      // Top Row
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+      
+          _CachedNetworkImage(
+            url: donor.fullImageUrl,
+            size: 48,
+            fallbackColor: typeColor,
+          ),
+      
+          const SizedBox(width: 12),
+      
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+      
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        donor.displayName,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF1A1A2E),
+                        ),
+                      ),
+                    ),
+      
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF0F2F8),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                           _ActionIcon(
+                                  icon: Icons.receipt_outlined, // Changed to receipt icon
+                                  onTap: () {
+                                    // Navigate to Create Receipt Screen with donor data
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CreateReceiptScreen(
+                                          donor: donor,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                        
+                         
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+      
+                const SizedBox(height: 4),
+      
+                Text(
+                  '${donor.type} | ${donor.uniqueId}',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[500],
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
-      child: Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-
-    // Top Row
-    Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-
-        _CachedNetworkImage(
-          url: donor.fullImageUrl,
-          size: 48,
-          fallbackColor: typeColor,
+      
+      const SizedBox(height: 10),
+      
+      // Phone
+      Row(
+        children: [
+      Icon(
+        Icons.phone_outlined,
+        size: 14,
+        color: Color(0xFF4169E1),
+      ),
+      const SizedBox(width: 4),
+      
+      Text(
+        donor.maskedPhone,
+        style: const TextStyle(
+          fontSize: 12.5,
+          color: Color(0xFF4A4F68),
         ),
-
-        const SizedBox(width: 12),
-
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      donor.displayName,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF1A1A2E),
-                      ),
-                    ),
-                  ),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF0F2F8),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                         _ActionIcon(
-                                icon: Icons.receipt_outlined, // Changed to receipt icon
-                                onTap: () {
-                                  // Navigate to Create Receipt Screen with donor data
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => CreateReceiptScreen(
-                                        donor: donor,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                        const SizedBox(width: 6),
-                        _ActionIcon(
-                          icon: Icons.edit_outlined,
-                          // In your DonorListScreen, when tapping on edit action:
-onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => EditDonorScreen(donor: donor),
-    ),
-  );
-}
-                        ),
-                        const SizedBox(width: 6),
-                   _ActionIcon(
-  icon: Icons.remove_red_eye_outlined,
-  onTap: () {
-    // IMPORTANT: Pass the DATABASE ID (donor.id) not the FTS ID
-    final donorId = donor.id?.toString() ?? '';
-    debugPrint('🔍 Viewing donor - DB ID: ${donor.id}, FTS ID: ${donor.indicompFtsId}');
-    debugPrint('🚀 Navigating to DonorViewScreen with DATABASE ID: $donorId');
-    
-    if (donorId.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DonorViewScreen(
-            donorId: donorId,  // Pass DATABASE ID (e.g., 12399)
+      ),
+      
+      const SizedBox(width: 12),
+      
+      Icon(
+        Icons.mail_outline,
+        size: 14,
+        color: Color(0xFF4169E1),
+      ),
+      const SizedBox(width: 4),
+      
+      Expanded(
+        child: Text(
+          donor.email,
+          style: const TextStyle(
+            fontSize: 12.5,
+            color: Color(0xFF4A4F68),
           ),
+          overflow: TextOverflow.ellipsis,
         ),
-      );
-    } else {
-      debugPrint('❌ No valid donor ID found');
-    }
-  },
-),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 4),
-
-              Text(
-                '${donor.type} | ${donor.uniqueId}',
+      ),
+        ],
+      ),
+      const SizedBox(height: 6),
+      
+      // Contact / Spouse
+      if (hasSpouse)
+        RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: 'Spouse: ',
                 style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[500],
+                  color: Color(0xFF4169E1),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.5,
+                ),
+              ),
+              TextSpan(
+                text: donor.spouseName,
+                style: const TextStyle(
+                  color: Color(0xFF4A4F68),
+                  fontSize: 12.5,
+                ),
+              ),
+            ],
+          ),
+        )
+      else if (hasContact)
+        RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: 'Contact: ',
+                style: TextStyle(
+                  color: Color(0xFF4169E1),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.5,
+                ),
+              ),
+              TextSpan(
+                text: donor.contactName,
+                style: const TextStyle(
+                  color: Color(0xFF4A4F68),
+                  fontSize: 12.5,
                 ),
               ),
             ],
           ),
         ),
-      ],
-    ),
-
-    const SizedBox(height: 10),
-
-    // Phone
-    Row(
-  children: [
-    Icon(
-      Icons.phone_outlined,
-      size: 14,
-      color: Color(0xFF4169E1),
-    ),
-    const SizedBox(width: 4),
-
-    Text(
-      donor.maskedPhone,
-      style: const TextStyle(
-        fontSize: 12.5,
-        color: Color(0xFF4A4F68),
+        ],
       ),
-    ),
-
-    const SizedBox(width: 12),
-
-    Icon(
-      Icons.mail_outline,
-      size: 14,
-      color: Color(0xFF4169E1),
-    ),
-    const SizedBox(width: 4),
-
-    Expanded(
-      child: Text(
-        donor.email,
-        style: const TextStyle(
-          fontSize: 12.5,
-          color: Color(0xFF4A4F68),
-        ),
-        overflow: TextOverflow.ellipsis,
+        
       ),
-    ),
-  ],
-),
-    const SizedBox(height: 6),
-
-    // Contact / Spouse
-    if (hasSpouse)
-      RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: 'Spouse: ',
-              style: TextStyle(
-                color: Color(0xFF4169E1),
-                fontWeight: FontWeight.w600,
-                fontSize: 12.5,
-              ),
-            ),
-            TextSpan(
-              text: donor.spouseName,
-              style: const TextStyle(
-                color: Color(0xFF4A4F68),
-                fontSize: 12.5,
-              ),
-            ),
-          ],
-        ),
-      )
-    else if (hasContact)
-      RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: 'Contact: ',
-              style: TextStyle(
-                color: Color(0xFF4169E1),
-                fontWeight: FontWeight.w600,
-                fontSize: 12.5,
-              ),
-            ),
-            TextSpan(
-              text: donor.contactName,
-              style: const TextStyle(
-                color: Color(0xFF4A4F68),
-                fontSize: 12.5,
-              ),
-            ),
-          ],
-        ),
-      ),
-  ],
-),
-      
     );
   }
 }

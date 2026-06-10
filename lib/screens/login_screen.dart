@@ -1,6 +1,7 @@
 import 'package:bb/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _rememberMe = true;
   bool _obscurePassword = true;
+  bool _acceptTerms = false;
 
   static const Color _primaryBlue = Color(0xFF4169E1);
   static const Color _labelBlue = Color(0xFF4169E1);
@@ -26,6 +28,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
+    if (!_acceptTerms) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text(
+        'Please accept Terms & Conditions and Privacy Policy',
+      ),
+    ),
+  );
+  return;
+}
     if (_formKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final result = await authProvider.login(
@@ -38,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result['message'] ?? 'Invalid email or password'),
+            content: Text(result['message'] ?? 'Invalid Username or password'),
             backgroundColor: Colors.red,
           ),
         );
@@ -124,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         // Email label
                         Text(
-                          'Email',
+                          'Username',
                           style: TextStyle(
                             color: _labelBlue,
                             fontSize: 13.5,
@@ -142,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: Color(0xFF1A1A2E),
                           ),
                           decoration: InputDecoration(
-                            hintText: 'abc13@gmail.com',
+                            hintText: 'username',
                             hintStyle: TextStyle(
                               color: Color(0xFFB0B5C8),
                               fontSize: 14.5,
@@ -183,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           validator: (value) =>
-                              value?.isEmpty ?? true ? 'Email is required' : null,
+                              value?.isEmpty ?? true ? 'username is required' : null,
                         ),
 
                         const SizedBox(height: 20),
@@ -318,115 +330,132 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
 
-                        const SizedBox(height: 28),
+                        
+const SizedBox(height: 16),
 
-                        // Login button
-                        SizedBox(
-                          width: double.infinity,
-                          height: 52,
-                          child: ElevatedButton(
-                            onPressed: authProvider.isLoading ? null : _handleLogin,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: _primaryBlue,
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              disabledBackgroundColor:
-                                  _primaryBlue.withOpacity(0.6),
-                            ),
-                            child: authProvider.isLoading
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : const Text(
-                                    'Login',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.3,
-                                    ),
-                                  ),
-                          ),
-                        ),
-
+Row(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Checkbox(
+      value: _acceptTerms,
+      activeColor: _primaryBlue,
+      onChanged: (value) {
+        setState(() {
+          _acceptTerms = value ?? false;
+        });
+      },
+    ),
+    Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: RichText(
+          text: TextSpan(
+            style: const TextStyle(
+              color: Color(0xFF6B7080),
+              fontSize: 13,
+            ),
+            children: [
+              const TextSpan(
+                text: 'I agree to the ',
+              ),
+              WidgetSpan(
+                child: GestureDetector(
+                  onTap: () {
+                     launchUrl(
+  Uri.parse('https://ftschamp.com/privacy-policy.html'),
+);
+                  },
+                  child: const Text(
+                    'Privacy Policy',
+                    style: TextStyle(
+                      color: Color(0xFF4169E1),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+                const TextSpan(
+                text: ' and ',
+              ),
+              WidgetSpan(
+                child: GestureDetector(
+                  onTap: () {
+                     launchUrl(
+  Uri.parse(' https://ftschamp.com/terms-condition.html'),
+);// Open Terms URL
+                  },
+                  child: const Text(
+                    'Terms & Conditions',
+                    style: TextStyle(
+                      color: Color(0xFF4169E1),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+             
+            ],
+          ),
+        ),
+      ),
+    ),
+  ],
+),
+                     const SizedBox(height: 28),   // Login button
+                      SizedBox(
+  width: double.infinity,
+  height: 52,
+  child: Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(14),
+      gradient: const LinearGradient(
+        colors: [
+          Color(0xFF4074DA), // primary
+          Color(0xFF153C89), // primaryDark
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+    ),
+    child: ElevatedButton(
+      onPressed: authProvider.isLoading ? null : _handleLogin,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        disabledBackgroundColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+      ),
+      child: authProvider.isLoading
+          ? const SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            )
+          : const Text(
+              'Login',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.3,
+                color: Colors.white,
+              ),
+            ),
+    ),
+  ),
+),
                         const SizedBox(height: 22),
 
                         // OR divider
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                color: Color(0xFFCDD0DC),
-                                thickness: 1,
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              child: Text(
-                                'or',
-                                style: TextStyle(
-                                  color: Color(0xFF9DA3B4),
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Divider(
-                                color: Color(0xFFCDD0DC),
-                                thickness: 1,
-                              ),
-                            ),
-                          ],
-                        ),
-
+                       
                         const SizedBox(height: 20),
 
                         // Sign up with Google button
-                        SizedBox(
-                          width: double.infinity,
-                          height: 52,
-                          child: OutlinedButton(
-                            onPressed: () {},
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              side: BorderSide(
-                                color: Color(0xFFE2E5EF),
-                                width: 1.2,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              elevation: 0,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/images/Google.png',
-                                  height: 22,
-                                  width: 22,
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  'Sign up with google',
-                                  style: TextStyle(
-                                    color: Color(0xFF4A4F68),
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        
                       ],
                     ),
                   ),

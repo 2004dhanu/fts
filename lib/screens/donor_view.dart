@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:bb/models/donor.dart';
+import 'package:bb/screens/edit_donor_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -57,7 +59,8 @@ class DonorViewApiService {
 // ─────────────────────────────────────────────────────────────────────────────
 class DonorViewScreen extends StatefulWidget {
   final String donorId;
-  const DonorViewScreen({Key? key, required this.donorId}) : super(key: key);
+  final Donor donor;
+  const DonorViewScreen({Key? key, required this.donorId,  required this.donor,}) : super(key: key);
 
   @override
   State<DonorViewScreen> createState() => _DonorViewScreenState();
@@ -247,7 +250,16 @@ class _DonorViewScreenState extends State<DonorViewScreen>
         title: const Text('Donor Overview',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: _textPrimary)),
         actions: [
-          IconButton(icon: const Icon(Icons.edit_outlined, size: 20), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.edit_outlined, size: 20),   onPressed: () {
+        Navigator.push(
+      context,
+      MaterialPageRoute(
+       builder: (context) => EditDonorScreen(
+  donor: widget.donor,
+),
+      ),
+        );
+      }),
           IconButton(icon: const Icon(Icons.refresh, size: 20), onPressed: _fetchAllData),
         ],
         bottom: PreferredSize(
@@ -477,20 +489,18 @@ class _DonorViewScreenState extends State<DonorViewScreen>
   }
 
   // ── Tab Bar ────────────────────────────────────────────────────────────────
-  Widget _buildTabBar() => Container(
-    color: Colors.white,
-    child: TabBar(
-      controller: _tabController,
-      isScrollable: true,
-      labelColor: _blue,
-      unselectedLabelColor: _textSecondary,
-      indicatorColor: _blue,
-      indicatorWeight: 2.5,
-      labelStyle: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600),
-      unselectedLabelStyle: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w500),
-      tabs: _tabs.map((t) => Tab(text: t)).toList(),
-    ),
-  );
+ Widget _buildTabBar() => Container(
+  color: Colors.white,
+  child: TabBar(
+    controller: _tabController,
+    isScrollable: true,
+    tabAlignment: TabAlignment.start,
+    labelColor: _blue,
+    unselectedLabelColor: _textSecondary,
+    indicatorColor: _blue,
+    tabs: _tabs.map((t) => Tab(text: t)).toList(),
+  ),
+);
 
   // ── Shared UI helpers ──────────────────────────────────────────────────────
   Widget _card(Widget child) => Container(

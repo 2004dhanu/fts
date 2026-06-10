@@ -152,10 +152,7 @@ class _CreateReceiptScreenState extends State<CreateReceiptScreen> with WidgetsB
   DataSource? _selectedSource;
 
   // Realization Date — 3 separate dropdowns
-  String? _selDay;
-  String? _selMonth;
-  String? _selYear;
-
+  
   final _receiptDateController        = TextEditingController();
   final _totalAmountController        = TextEditingController();
   final _transactionDetailsController = TextEditingController();
@@ -165,7 +162,7 @@ class _CreateReceiptScreenState extends State<CreateReceiptScreen> with WidgetsB
   // ── Dropdown options ───────────────────────────────────────────────────────
   final List<String> _exemptionTypes  = ['80G', 'Non 80G', 'FCRA'];
   final List<String> _donationTypes   = ['OTS', 'General', 'Membership'];
-  final List<String> _transactionModes = ['Cash', 'Cheque', 'Transfer', 'Other'];
+  final List<String> _transactionModes = ['Cash', 'Cheque', 'Transfer'];
 
   List<String>     _financialYears       = [];
   List<String>     _membershipYears      = [];
@@ -177,7 +174,7 @@ class _CreateReceiptScreenState extends State<CreateReceiptScreen> with WidgetsB
   final List<String> _days   = List.generate(31, (i) => (i + 1).toString().padLeft(2, '0'));
   final List<String> _months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
   final List<String> _years  = List.generate(10, (i) => (DateTime.now().year - 5 + i).toString());
-
+  final _realizationDateController = TextEditingController();
   // Helper to get display date (dd-MM-yyyy) for UI
   String get _displayDate {
     try {
@@ -204,7 +201,6 @@ class _CreateReceiptScreenState extends State<CreateReceiptScreen> with WidgetsB
     WidgetsBinding.instance.addObserver(this);
     _updateCurrentDate();
     _loadDropdownData();
-    _checkPanAndShowDialog();
   }
 
   @override
@@ -368,10 +364,8 @@ class _CreateReceiptScreenState extends State<CreateReceiptScreen> with WidgetsB
     if (!_validatePage2()) return;
 
     // Build realization date string
-    String realizationDate = '';
-    if (_selDay != null && _selMonth != null && _selYear != null) {
-      realizationDate = '$_selYear-$_selMonth-$_selDay';
-    }
+   String realizationDate =
+    _realizationDateController.text;
 
     setState(() => _isLoading = true);
     final token = Provider.of<AuthProvider>(context, listen: false).token ?? '';
@@ -460,7 +454,19 @@ class _CreateReceiptScreenState extends State<CreateReceiptScreen> with WidgetsB
       // Category
       _blueSectionLabel('Category'),
       const SizedBox(height: 10),
-      _chipRow(_exemptionTypes, _selectedExemptionType, (v) => setState(() => _selectedExemptionType = v)),
+    _chipRow(
+  _exemptionTypes,
+  _selectedExemptionType,
+  (v) {
+    setState(() {
+      _selectedExemptionType = v;
+    });
+
+    if (v == '80G' && !_hasValidPan()) {
+      _showNoPanWarningDialog();
+    }
+  },
+),
       if (_is80G() && !_hasValidPan() && !_showNoPanDialog) ...[
         const SizedBox(height: 6),
         const Text('⚠️ PAN required for 80G receipts',
@@ -510,7 +516,7 @@ class _CreateReceiptScreenState extends State<CreateReceiptScreen> with WidgetsB
       // Realization Date — 3 dropdowns
       _blueSectionLabel('Realization Date'),
       const SizedBox(height: 10),
-      _realizationDateRow(),
+      _realizationDateField(),
       const SizedBox(height: 18),
 
       // Transaction Details
@@ -745,36 +751,8 @@ class _CreateReceiptScreenState extends State<CreateReceiptScreen> with WidgetsB
   }
 
   // Realization Date — 3 dropdowns: Day | Month | Year
-  Widget _realizationDateRow() => Row(children: [
-    Expanded(child: _inlineDropdown('Day',   _days,   _selDay,   (v) => setState(() => _selDay   = v))),
-    const SizedBox(width: 10),
-    Expanded(child: _inlineDropdown('Month', _months, _selMonth, (v) => setState(() => _selMonth = v))),
-    const SizedBox(width: 10),
-    Expanded(child: _inlineDropdown('Year',  _years,  _selYear,  (v) => setState(() => _selYear  = v))),
-  ]);
-
-  Widget _inlineDropdown(String hint, List<String> items, String? value, ValueChanged<String?> onChange) =>
-    Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      height: 46,
-      decoration: BoxDecoration(
-        color: _cardWhite,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: _borderColor),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          hint: Text(hint, style: const TextStyle(fontSize: 13, color: _textLight)),
-          isExpanded: true,
-          icon: const Icon(Icons.arrow_drop_down, size: 18, color: _textLight),
-          style: const TextStyle(fontSize: 13, color: _textPrimary),
-          items: items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-          onChanged: onChange,
-        ),
-      ),
-    );
-
+ 
+ 
   Widget _textArea(TextEditingController ctrl, String hint, int lines) => Container(
     decoration: BoxDecoration(
       color: _cardWhite,
@@ -802,23 +780,51 @@ class _CreateReceiptScreenState extends State<CreateReceiptScreen> with WidgetsB
     bool loading = false,
   }) => Row(children: [
     Expanded(
-      child: ElevatedButton(
-        onPressed: onPrimary,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: _primaryBlue,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          minimumSize: const Size(0, 48),
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-        child: loading
-          ? const SizedBox(width: 20, height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-          : Text(primary, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+  child: Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10),
+      gradient: const LinearGradient(
+        colors: [
+          Color(0xFF4074DA),
+          Color(0xFF153C89),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       ),
     ),
+    child: ElevatedButton(
+      onPressed: onPrimary,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        minimumSize: const Size(0, 48),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: loading
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            )
+          : Text(
+              primary,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+    ),
+  ),
+),
     const SizedBox(width: 12),
     Expanded(
       child: OutlinedButton(
@@ -946,4 +952,61 @@ class _CreateReceiptScreenState extends State<CreateReceiptScreen> with WidgetsB
     if (parts.length == 1) return parts[0][0].toUpperCase();
     return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
   }
+  Widget _realizationDateField() => InkWell(
+  onTap: () async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2035),
+    );
+
+    if (picked != null) {
+      setState(() {
+        _realizationDateController.text =
+            DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
+  },
+  child: Container(
+    height: 54,
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: _borderColor),
+    ),
+    child: Row(
+      children: [
+        const Icon(
+          Icons.calendar_month_rounded,
+          color: _primaryBlue,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            _realizationDateController.text.isEmpty
+                ? 'Select realization date'
+                : DateFormat('dd MMM yyyy').format(
+                    DateTime.parse(
+                      _realizationDateController.text,
+                    ),
+                  ),
+            style: TextStyle(
+              color: _realizationDateController.text.isEmpty
+                  ? _textLight
+                  : _textPrimary,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        const Icon(
+          Icons.arrow_drop_down,
+          color: _textSecondary,
+        ),
+      ],
+    ),
+  ),
+);
 }
