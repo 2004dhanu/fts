@@ -148,12 +148,48 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       },
                     ),
                     SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: authProvider.isLoading ? null : _handleResetPassword,
-                      child: authProvider.isLoading
-                          ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                          : Text('Reset Password'),
-                    ),
+                    Container(
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(10),
+    gradient: const LinearGradient(
+      colors: [
+        Color(0xFF4074DA),
+        Color(0xFF153C89),
+      ],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ),
+  ),
+  child: ElevatedButton(
+    onPressed: authProvider.isLoading
+        ? null
+        : _handleResetPassword,
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.transparent,
+      shadowColor: Colors.transparent,
+      foregroundColor: Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+    ),
+    child: authProvider.isLoading
+        ? const SizedBox(
+            height: 20,
+            width: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.white,
+            ),
+          )
+        : const Text(
+            'Reset Password',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+  ),
+),
                     SizedBox(height: 16),
                     Center(
                       child: TextButton(

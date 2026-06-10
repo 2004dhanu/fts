@@ -1,4 +1,4 @@
-package com.example.bb
+package com.fts.agsolutions
 
 import io.flutter.embedding.android.FlutterActivity
 

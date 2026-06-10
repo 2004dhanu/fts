@@ -245,7 +245,7 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> {
           _buildSearchBar(),
           
           // Stats Row
-          _buildStatsRow(),
+         
           
           // List View
           Expanded(
@@ -342,70 +342,7 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> {
     );
   }
 
-  Widget _buildStatsRow() {
-    final totalAmount = _filteredReceipts.fold<int>(
-      0,
-      (sum, receipt) => sum + (int.tryParse(receipt.totalAmount) ?? 0),
-    );
-    
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Total Receipts',
-                  style: TextStyle(fontSize: 11, color: _textSecondary),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  _filteredReceipts.length.toString(),
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: _primaryBlue),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: 1,
-            height: 40,
-            color: _borderColor,
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const Text(
-                  'Total Amount',
-                  style: TextStyle(fontSize: 11, color: _textSecondary),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '₹${totalAmount.toString()}',
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: _successGreen),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
+  
   Widget _buildReceiptCard(Receipt receipt) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -535,11 +472,7 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> {
               ),
               if (receipt.chapterName.isNotEmpty) ...[
                 const SizedBox(width: 8),
-                _buildDetailChip(
-                  Icons.location_on_outlined,
-                  receipt.chapterName,
-                  _textSecondary,
-                ),
+               
               ],
             ],
           ),
@@ -559,10 +492,7 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> {
                   _buildActionButton(Icons.visibility_outlined, 'View', () {
                     _showReceiptDetail(receipt);
                   }),
-                  const SizedBox(width: 12),
-                  _buildActionButton(Icons.download_outlined, 'PDF', () {
-                    // Download PDF functionality
-                  }),
+                 
                 ],
               ),
             ],
