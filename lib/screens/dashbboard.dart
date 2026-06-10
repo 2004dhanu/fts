@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
+import 'package:bb/screens/create_donor_company.dart';
+import 'package:bb/screens/create_individual_Donor.dart';
 import 'package:bb/screens/donor_list_screen.dart';
 import 'package:bb/screens/login_screen.dart';
 import 'package:bb/screens/reciept.dart';
@@ -244,19 +246,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // User profile data
   UserProfile? _userProfile;
   bool _isLoadingProfile = true;
+   bool _isSaving = false;
   
   // Navigation
   int _selectedIndex = 0;
-  final List<String> _screenTitles = [
+ final List<String> _screenTitles = [
   'Dashboard',
-  'Donor',
+  'Donor List',
   'Receipt',
-  'School',
-  'Promoter',
-  'Event List',
-  'Summary',
-  'Downloads',
-  'Settings',
+];
+
+final List<IconData> _menuIcons = [
+  Icons.dashboard_outlined,
+  Icons.people_outline,
+  Icons.receipt_outlined,
 ];
  Widget _getCurrentScreen() {
   switch (_selectedIndex) {
@@ -269,6 +272,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     case 2:
       return ReceiptListScreen();
 
+    case 3:
+      return CreateDonorScreen();
+
+    case 4:
+      return CreateCompanyDonorScreen();
+
     default:
       return const Center(
         child: Text('Coming Soon'),
@@ -276,17 +285,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
   
-  final List<IconData> _menuIcons = [
-    Icons.dashboard_outlined,
-    Icons.people_outline,
-    Icons.receipt_outlined,
-    Icons.school_outlined,
-    Icons.emoji_events_outlined,
-    Icons.event_outlined,
-    Icons.summarize_outlined,
-    Icons.download_outlined,
-    Icons.settings_outlined,
-  ];
+  
 
   @override
   void initState() {
@@ -441,6 +440,51 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
     return 'user@example.com';
   }
+  Future<void> _deleteAccount() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Delete Account'),
+        content: const Text('Are you sure you want to delete your account? This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: _dangerRed),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    
+    if (confirm != true) return;
+    
+    setState(() => _isSaving = true);
+    final token = Provider.of<AuthProvider>(context, listen: false).token ?? '';
+    final success = await ProfileApiService.deleteAccount(token);
+    setState(() => _isSaving = false);
+    
+    if (success && mounted) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      authProvider.logout();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Account deleted successfully'), backgroundColor: _successGreen),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => LoginScreen()),
+        );
+      }
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to delete account. Please try again.'), backgroundColor: _dangerRed),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -504,6 +548,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ],
                       ),
                     ),
+                   
                     const Icon(Icons.chevron_right, size: 18, color: _textLight),
                   ],
                 ),
@@ -515,34 +560,99 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 itemCount: _menuIcons.length,
                 itemBuilder: (context, index) {
-                  final isSelected = _selectedIndex == index;
-                  return ListTile(
-                    leading: Icon(_menuIcons[index], color: isSelected ? _primaryBlue : _textSecondary, size: 22),
-                    title: Text(_screenTitles[index], style: TextStyle(fontSize: 14, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500, color: isSelected ? _primaryBlue : _textPrimary)),
-                    trailing: isSelected ? Container(width: 4, height: 20, decoration: BoxDecoration(color: _primaryBlue, borderRadius: BorderRadius.circular(2))) : null,
-                    onTap: () => _navigateToScreen(index),
-                  );
-                },
+  final isSelected = _selectedIndex == index;
+
+ if (index == 1) {
+  return Column(
+    children: [
+      ListTile(
+        leading: Icon(
+          _menuIcons[index],
+          color: isSelected ? _primaryBlue : _textSecondary,
+        ),
+        title: Text(
+          _screenTitles[index],
+        ),
+        onTap: () => _navigateToScreen(index),
+      ),
+
+      ListTile(
+        dense: true,
+        contentPadding: const EdgeInsets.only(left: 16),
+        leading: const Icon(Icons.person_add_alt_1, size: 24),
+        title: const Text(
+  'Add Donor',
+  style: TextStyle(
+    fontSize: 16,
+    
+  ),
+),
+        onTap: () async {
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CreateDonorScreen(),
+          ),
+        );
+
+        if (result == true) {
+          setState(() {});
+        }
+      },
+      ),
+
+      ListTile(
+        dense: true,
+        contentPadding: const EdgeInsets.only(left: 16),
+        leading: const Icon(Icons.business, size: 24),
+        title: const Text(
+  'Add Company',
+  style: TextStyle(
+    fontSize: 16,
+    
+  ),
+),
+       onTap: () async {
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                const CreateCompanyDonorScreen(),
+          ),
+        );
+
+        if (result == true) {
+          setState(() {});
+        }
+      },
+      ),
+    ],
+  );
+}
+  return ListTile(
+    leading: Icon(
+      _menuIcons[index],
+      color: isSelected ? _primaryBlue : _textSecondary,
+    ),
+    title: Text(
+      _screenTitles[index],
+      style: TextStyle(
+        color: isSelected ? _primaryBlue : _textPrimary,
+      ),
+    ),
+    onTap: () => _navigateToScreen(index),
+  );
+},
               ),
             ),
+             
             // Footer
             Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(border: Border(top: BorderSide(color: _borderColor))),
               child: Column(
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.privacy_tip_outlined, size: 20, color: _textSecondary),
-                    title: const Text('Privacy Policy', style: TextStyle(fontSize: 13, color: _textPrimary)),
-                    dense: true,
-                    onTap: () => _launchUrl('https://agstest.in/privacy-policy'),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.description_outlined, size: 20, color: _textSecondary),
-                    title: const Text('Terms & Conditions', style: TextStyle(fontSize: 13, color: _textPrimary)),
-                    dense: true,
-                    onTap: () => _launchUrl('https://agstest.in/terms-conditions'),
-                  ),
+                  
                   ListTile(
                     leading: const Icon(Icons.logout, size: 20, color: _dangerRed),
                     title: const Text('Logout', style: TextStyle(fontSize: 13, color: _dangerRed)),
@@ -550,6 +660,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onTap: _logout,
                   ),
                   const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: _deleteAccount,
+                    style: TextButton.styleFrom(foregroundColor: _dangerRed),
+                    child: const Text('Delete Account'),
+                  ),
                   Text('FTS CHAMP\nVersion 1.0', textAlign: TextAlign.center, style: TextStyle(fontSize: 10, color: _textLight)),
                 ],
               ),
@@ -589,13 +704,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           children: [
                             _buildStatGrid(),
                             const SizedBox(height: 14),
+                             _buildDonationSummary(),
+                              const SizedBox(height: 14),
                             _buildNeedApproval(),
                             const SizedBox(height: 14),
+                             _buildDistribution(),
+                              const SizedBox(height: 14),
                             _buildRecentNotices(),
-                            const SizedBox(height: 14),
-                            _buildDonationSummary(),
-                            const SizedBox(height: 14),
-                            _buildDistribution(),
                           ],
                         ),
                       ),
