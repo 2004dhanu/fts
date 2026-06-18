@@ -4,10 +4,18 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_windows
+<<<<<<< HEAD
+  permission_handler_windows
+=======
+>>>>>>> 340fb4e3687d1acbb774fc373bc216b9d1908053
   url_launcher_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
+<<<<<<< HEAD
+  jni
+=======
+>>>>>>> 340fb4e3687d1acbb774fc373bc216b9d1908053
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

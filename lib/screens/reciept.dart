@@ -1,4 +1,8 @@
 import 'dart:convert';
+<<<<<<< HEAD
+import 'package:bb/screens/ww.dart';
+=======
+>>>>>>> 340fb4e3687d1acbb774fc373bc216b9d1908053
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -480,6 +484,23 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> {
           const SizedBox(height: 10),
           
           // Footer Row
+<<<<<<< HEAD
+    Row(
+  children: [
+    _buildActionButton(Icons.visibility_outlined, 'View', () {
+      // Access property directly from the Receipt object
+      String receiptRefNo = receipt.receiptRefNo; // or receipt.receipt_ref_no
+      
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReceiptViewScreen(receiptRefNo: receiptRefNo),
+        ),
+      );
+    }),
+  ],
+),
+=======
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -497,6 +518,7 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> {
               ),
             ],
           ),
+>>>>>>> 340fb4e3687d1acbb774fc373bc216b9d1908053
         ],
       ),
     );
