@@ -4,8 +4,11 @@ import 'dart:math' as math;
 import 'package:bb/screens/create_donor_company.dart';
 import 'package:bb/screens/create_individual_Donor.dart';
 import 'package:bb/screens/donor_list_screen.dart';
+import 'package:bb/screens/faq_screen.dart';
 import 'package:bb/screens/login_screen.dart';
+import 'package:bb/screens/notice_screen.dart';
 import 'package:bb/screens/reciept.dart';
+import 'package:bb/screens/school_list.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -250,11 +253,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   
   // Navigation
   int _selectedIndex = 0;
- final List<String> _screenTitles = [
-  'Dashboard',
-  'Donor List',
-  'Receipt',
-];
+ 
 
 final List<IconData> _menuIcons = [
   Icons.dashboard_outlined,
@@ -285,7 +284,13 @@ final List<IconData> _menuIcons = [
   }
 }
   
-  
+  final List<String> _screenTitles = [
+  'Dashboard',
+  'Donor List',
+  'Receipt',
+  'Add Donor',
+  'Add Company',
+];
 
   @override
   void initState() {
@@ -506,6 +511,61 @@ final List<IconData> _menuIcons = [
       ),
       drawer: _buildDrawer(),
     body: _getCurrentScreen(),
+    bottomNavigationBar: Container(
+  margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+  decoration: BoxDecoration(
+    color: _primaryBlue,
+    borderRadius: BorderRadius.circular(24),
+    boxShadow: [
+      BoxShadow(
+        color: _primaryBlue.withOpacity(0.25),
+        blurRadius: 15,
+        offset: const Offset(0, 6),
+      ),
+    ],
+  ),
+  child: ClipRRect(
+    borderRadius: BorderRadius.circular(24),
+    child: BottomNavigationBar(
+      currentIndex: _selectedIndex,
+      onTap: (index) {
+        setState(() {
+          _selectedIndex = index;
+        });
+      },
+      backgroundColor: _primaryBlue,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.white70,
+      type: BottomNavigationBarType.fixed,
+      elevation: 0,
+      iconSize: 20,
+      selectedFontSize: 11,
+      unselectedFontSize: 10,
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.dashboard_rounded),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.people_alt_outlined),
+          label: 'Donors',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.receipt_long_outlined),
+          label: 'Receipt',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person_add_alt_1_rounded),
+          label: 'Add',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.business_outlined),
+          label: 'Company',
+        ),
+      ],
+    ),
+  ),
+),
     );
   }
 
@@ -591,7 +651,7 @@ final List<IconData> _menuIcons = [
         final result = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const CreateDonorScreen(),
+            builder: (context) => NotificationsScreen(),
           ),
         );
 
@@ -617,7 +677,7 @@ final List<IconData> _menuIcons = [
           context,
           MaterialPageRoute(
             builder: (context) =>
-                const CreateCompanyDonorScreen(),
+                const FaqScreen(),
           ),
         );
 

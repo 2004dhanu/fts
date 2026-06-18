@@ -99,7 +99,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 48),
-
+Center(
+  child: Image.asset(
+    'assets/images/fts_app_logo.png',
+    height: 120,
+    fit: BoxFit.contain,
+    cacheWidth: 400, // optional optimization
+  ),
+),
                   // Heading
                   Center(
                     child: Column(

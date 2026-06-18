@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bb/screens/ww.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -480,23 +481,21 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> {
           const SizedBox(height: 10),
           
           // Footer Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                receipt.receiptRefNo,
-                style: const TextStyle(fontSize: 11, color: _textLight),
-              ),
-              Row(
-                children: [
-                  _buildActionButton(Icons.visibility_outlined, 'View', () {
-                    _showReceiptDetail(receipt);
-                  }),
-                 
-                ],
-              ),
-            ],
-          ),
+    Row(
+  children: [
+    _buildActionButton(Icons.visibility_outlined, 'View', () {
+      // Access property directly from the Receipt object
+      String receiptRefNo = receipt.receiptRefNo; // or receipt.receipt_ref_no
+      
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReceiptViewScreen(receiptRefNo: receiptRefNo),
+        ),
+      );
+    }),
+  ],
+),
         ],
       ),
     );
