@@ -1,5 +1,8 @@
 import 'dart:convert';
+<<<<<<< HEAD
 import 'package:bb/screens/ww.dart';
+=======
+>>>>>>> 340fb4e3687d1acbb774fc373bc216b9d1908053
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -481,6 +484,7 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> {
           const SizedBox(height: 10),
           
           // Footer Row
+<<<<<<< HEAD
     Row(
   children: [
     _buildActionButton(Icons.visibility_outlined, 'View', () {
@@ -496,6 +500,25 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> {
     }),
   ],
 ),
+=======
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                receipt.receiptRefNo,
+                style: const TextStyle(fontSize: 11, color: _textLight),
+              ),
+              Row(
+                children: [
+                  _buildActionButton(Icons.visibility_outlined, 'View', () {
+                    _showReceiptDetail(receipt);
+                  }),
+                 
+                ],
+              ),
+            ],
+          ),
+>>>>>>> 340fb4e3687d1acbb774fc373bc216b9d1908053
         ],
       ),
     );

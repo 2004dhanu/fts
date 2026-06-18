@@ -4,9 +4,13 @@ import 'dart:math' as math;
 import 'package:bb/screens/create_donor_company.dart';
 import 'package:bb/screens/create_individual_Donor.dart';
 import 'package:bb/screens/donor_list_screen.dart';
+<<<<<<< HEAD
 import 'package:bb/screens/faq_screen.dart';
 import 'package:bb/screens/login_screen.dart';
 import 'package:bb/screens/notice_screen.dart';
+=======
+import 'package:bb/screens/login_screen.dart';
+>>>>>>> 340fb4e3687d1acbb774fc373bc216b9d1908053
 import 'package:bb/screens/reciept.dart';
 import 'package:bb/screens/school_list.dart';
 import 'package:flutter/material.dart';
@@ -651,7 +655,11 @@ final List<IconData> _menuIcons = [
         final result = await Navigator.push(
           context,
           MaterialPageRoute(
+<<<<<<< HEAD
             builder: (context) => NotificationsScreen(),
+=======
+            builder: (context) =>  SchoolListScreen(),
+>>>>>>> 340fb4e3687d1acbb774fc373bc216b9d1908053
           ),
         );
 
@@ -677,7 +685,11 @@ final List<IconData> _menuIcons = [
           context,
           MaterialPageRoute(
             builder: (context) =>
+<<<<<<< HEAD
                 const FaqScreen(),
+=======
+                const CreateCompanyDonorScreen(),
+>>>>>>> 340fb4e3687d1acbb774fc373bc216b9d1908053
           ),
         );
 

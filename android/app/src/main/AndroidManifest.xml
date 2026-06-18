@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<<<<<<< HEAD
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
         <uses-permission android:name="android.permission.INTERNET"/>
@@ -8,6 +9,12 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">
+=======
+    <application
+        android:label="FTS CHAMP"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher">
+>>>>>>> 340fb4e3687d1acbb774fc373bc216b9d1908053
         <activity
             android:name=".MainActivity"
             android:exported="true"
